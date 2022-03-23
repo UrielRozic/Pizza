@@ -14,32 +14,24 @@ namespace Pizzas.API.Controllers
     {
 
         [HttpGet]
-        public IEnumerable<Pizza> GetAll()
+        public IActionResult GetAll()
         {
-            var rng = new Random();
-            return Enumerable.Range(1, 5).Select(index => new Pizza
-            {
-                Descripcion = "Con salsa de tomate y queso",
-                Id = 1,
-                Importe = 300,
-                LibreGluten = false,
-                Nombre = "Muzza Individual"
-            })
-            .ToArray();
+            List<Pizza> ListaPizzas = Bd.SelectAll();
+            return Ok(ListaPizzas);
         }
         [HttpGet("{id}")]
-        public IActionResult<Pizza> GetById(int id){
+        public IActionResult GetById(int id){
             Pizza pizza = Bd.GetById(id);
             if(pizza == null){
                 return NotFound();
             }
-            return pizza;
+            return Ok( pizza);
 
         }
         [HttpPost]
         public IActionResult Create(Pizza pizza){
             Bd.Add(pizza);
-            return CreatedAtAction(nameof(create), new { id = pizza.Id},pizza);
+            return Ok(pizza);
 
         }
         [HttpPut("{id}")]
@@ -47,17 +39,21 @@ namespace Pizzas.API.Controllers
             if(id != pizza.Id){
                 return BadRequest();
             }
-            Pizza pizzaExistente = Bd.Get(id);
+            Pizza pizzaExistente = Bd.GetById(id);
             if(pizzaExistente is null){
                 return NotFound();
             }
-            Bd.Update(pizza);
+            Bd.Update(id,pizza);
             return Ok();
-
         }
         [HttpDelete("{id}")]
-        public IAction DeleteBy(int id){
-
+        public IActionResult DeleteBy(int id){
+            Pizza pizza = Bd.GetById(id);
+            if (pizza == null){
+                return NotFound();
+            }
+            Bd.DeleteBy(id);
+            return Ok();
         }
 
     }
