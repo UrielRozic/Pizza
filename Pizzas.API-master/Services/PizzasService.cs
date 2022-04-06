@@ -83,14 +83,46 @@ using System.Data.SqlClient;
             sqlQuery += ")";
             using (SqlConnection db = new SqlConnection(CONNECTION_STRING)) {
                 intRowsAffected = db.Execute(sqlQuery, new { 
-                    nombre      = pizza.Nombre,   
-                        libreGluten = pizza.LibreGluten,  
-                                importe     = pizza.Importe, 
-                                  descripcion = pizza.Descripcion
-                                  } );    }    
+                    nombre = pizza.Nombre,   
+                    libreGluten = pizza.LibreGluten,  
+                    importe = pizza.Importe, 
+                    descripcion = pizza.Descripcion
+                });  
+            }    
             
             return intRowsAffected; 
             
+        }
+
+        public static int UpdateById(Pizza pizza) {
+            string  sqlQuery;    
+            int intRowsAffected = 0;    
+            sqlQuery = "UPDATE Pizzas SET ";    
+            sqlQuery += "Nombre = @nombre, ";
+            sqlQuery += "LibreGluten = @libreGluten,";
+            sqlQuery += "Importe = @importe, ";
+            sqlQuery += "Descripcion = @descripcion ";    
+            sqlQuery += "WHERE Id = @idPizza";    
+            using (Bd.GetConnection) {
+                intRowsAffected = db.Execute(sqlQuery, new {              
+                idPizza = pizza.Id,               
+                nombre = pizza.Nombre,                 
+                libreGluten = pizza.LibreGluten,         
+                importe = pizza.Importe,   
+                descripcion = pizza.Descripcion  
+                });    
+            }   
+            return intRowsAffected;
+        }
+
+        public static int DeleteById(int id) { 
+            string sqlQuery; 
+            int intRowsAffected  = 0; 
+            sqlQuery = "DELETE FROM Pizzas WHERE Id = @idPizza"; 
+            using (SqlConnection db = new SqlConnection (CONNECTION_STRING)) { 
+            intoRowsAffected = db. Execute( sqlQuery, new{IdPizza = id}); 
+            }
+            return intRowsAffected; 
         }
 
         public static int TestTryCatch(){
@@ -98,6 +130,6 @@ using System.Data.SqlClient;
                 //bloque de código que quieras probar 
             }
             catch (Exception error){
-                return Ok("error error error")
+                return Ok("error error error");
             }
         }
