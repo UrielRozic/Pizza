@@ -16,12 +16,12 @@ namespace Pizzas.API.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            List<Pizza> ListaPizzas = Bd.SelectAll();
+            List<Pizza> ListaPizzas = PizzasService.GetAll();
             return Ok(ListaPizzas);
         }
         [HttpGet("{id}")]
         public IActionResult GetById(int id){
-            Pizza pizza = Bd.GetById(id);
+            Pizza pizza = PizzasService.GetById(id);
             if(pizza == null){
                 return NotFound();
             }
@@ -30,7 +30,7 @@ namespace Pizzas.API.Controllers
         }
         [HttpPost]
         public IActionResult Create(Pizza pizza){
-            Bd.Add(pizza);
+            PizzasService.Insert(pizza);
             return Ok(pizza);
 
         }
@@ -39,20 +39,20 @@ namespace Pizzas.API.Controllers
             if(id != pizza.Id){
                 return BadRequest();
             }
-            Pizza pizzaExistente = Bd.GetById(id);
+            Pizza pizzaExistente = PizzasService.GetById(id);
             if(pizzaExistente is null){
                 return NotFound();
             }
-            Bd.Update(id,pizza);
+            PizzasService.UpdateById(id,pizza);
             return Ok();
         }
         [HttpDelete("{id}")]
         public IActionResult DeleteBy(int id){
-            Pizza pizza = Bd.GetById(id);
+            Pizza pizza = PizzasService.GetById(id);
             if (pizza == null){
                 return NotFound();
             }
-            Bd.DeleteBy(id);
+            PizzasService.DeleteBy(id);
             return Ok();
         }
 
